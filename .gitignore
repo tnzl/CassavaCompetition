@@ -6,3 +6,5 @@ torchvision-nightly-cp37-cp37m-linux_x86_64.whl
 wandb/*
 
 __pycache__/*
+
+*.pth

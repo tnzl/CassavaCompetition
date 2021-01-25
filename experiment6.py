@@ -121,13 +121,13 @@ def map_fn(index, flags, wandb_run):
                       lr_schedule=lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1),
                       wandb_run=wandb_run)
     learner.fit()
-    xm.rendezvous('barrier-2')
+ #   xm.rendezvous('barrier-2')
 
 flags = {
     'project' : "cassava-leaf-disease-classification",
     'run_name' : 'try-xxx',
     'pin_memory': True,
-    'data_root' : '../input/cassava-leaf-disease-classification',
+    'data_root' : '/kaggle/input/cassava-leaf-disease-classification',
     'img_size' : 320,   
     'fold': 0,
     'model': 'resnext50_32x4d',

@@ -5,9 +5,8 @@ import time
 import torch
 
 # xla 
-# import torch_xla.core.xla_model as xm
-# import torch_xla.distributed.parallel_loader as pl
-
+import torch_xla.core.xla_model as xm
+import torch_xla.distributed.parallel_loader as pl
 
 class Learner():
     
@@ -189,5 +188,5 @@ class Learner():
         #save model
         self.save_model()
         
-        self.verboser("Finished training. Train time was:", time.time() - train_start) 
+        self.verboser(f"Finished training. Train time was: {time.time() - train_start}") 
         return
