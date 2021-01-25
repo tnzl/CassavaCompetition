@@ -1,0 +1,814 @@
+/bin/sh: 1: !curl: not found
+/bin/sh: 1: !python: not found
+/bin/sh: 1: !curl: not found
+/bin/sh: 1: !python: not found
+wandb: Currently logged in as: tnzl (use `wandb login --relogin` to force relogin)
+/bin/sh: 1: !curl: not found
+/bin/sh: 1: !curl: not found
+/bin/sh: 1: !curl: not found
+/bin/sh: 1: !python: not found
+/bin/sh: 1: !python: not found
+/bin/sh: 1: !python: not found
+/bin/sh: 1: !curl: not found
+/bin/sh: 1: !python: not found
+/bin/sh: 1: !curl: not found
+/bin/sh: 1: !python: not found
+wandb: Currently logged in as: tnzl (use `wandb login --relogin` to force relogin)
+/bin/sh: 1: !curl: not found
+/bin/sh: 1: !python: not found
+wandb: Currently logged in as: tnzl (use `wandb login --relogin` to force relogin)
+wandb: Currently logged in as: tnzl (use `wandb login --relogin` to force relogin)
+wandb: Currently logged in as: tnzl (use `wandb login --relogin` to force relogin)
+wandb: Currently logged in as: tnzl (use `wandb login --relogin` to force relogin)
+wandb: Currently logged in as: tnzl (use `wandb login --relogin` to force relogin)
+wandb: Currently logged in as: tnzl (use `wandb login --relogin` to force relogin)
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+wandb: ERROR Abnormal program exit
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 114, in _main
+    prepare(preparation_data)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 225, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 277, in _fixup_main_from_path
+    run_name="__mp_main__")
+  File "/opt/conda/lib/python3.7/runpy.py", line 263, in run_path
+    pkg_name=pkg_name, script_name=fname)
+  File "/opt/conda/lib/python3.7/runpy.py", line 96, in _run_module_code
+    mod_name, mod_spec, pkg_name, script_name)
+  File "/opt/conda/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/root/CassavaCompetition/experiment6.py", line 148, in <module>
+    wandb_run = wandb.init(project=flags['project'], name=flags['run_name'], config=flags)
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 612, in init
+    six.raise_from(Exception("problem"), error_seen)
+  File "<string>", line 3, in raise_from
+Exception: problem
+Problem at: /root/CassavaCompetition/experiment6.py 148 <module>
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+wandb: ERROR Abnormal program exit
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 114, in _main
+    prepare(preparation_data)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 225, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 277, in _fixup_main_from_path
+    run_name="__mp_main__")
+  File "/opt/conda/lib/python3.7/runpy.py", line 263, in run_path
+    pkg_name=pkg_name, script_name=fname)
+  File "/opt/conda/lib/python3.7/runpy.py", line 96, in _run_module_code
+    mod_name, mod_spec, pkg_name, script_name)
+  File "/opt/conda/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/root/CassavaCompetition/experiment6.py", line 148, in <module>
+    wandb_run = wandb.init(project=flags['project'], name=flags['run_name'], config=flags)
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 612, in init
+    six.raise_from(Exception("problem"), error_seen)
+  File "<string>", line 3, in raise_from
+Exception: problem
+Problem at: /root/CassavaCompetition/experiment6.py 148 <module>
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+wandb: ERROR Abnormal program exit
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 114, in _main
+    prepare(preparation_data)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 225, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 277, in _fixup_main_from_path
+    run_name="__mp_main__")
+  File "/opt/conda/lib/python3.7/runpy.py", line 263, in run_path
+    pkg_name=pkg_name, script_name=fname)
+  File "/opt/conda/lib/python3.7/runpy.py", line 96, in _run_module_code
+    mod_name, mod_spec, pkg_name, script_name)
+  File "/opt/conda/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/root/CassavaCompetition/experiment6.py", line 148, in <module>
+    wandb_run = wandb.init(project=flags['project'], name=flags['run_name'], config=flags)
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 612, in init
+    six.raise_from(Exception("problem"), error_seen)
+  File "<string>", line 3, in raise_from
+Exception: problem
+Problem at: /root/CassavaCompetition/experiment6.py 148 <module>
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+wandb: ERROR Abnormal program exit
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+wandb: ERROR Abnormal program exit
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 114, in _main
+    prepare(preparation_data)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 225, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 277, in _fixup_main_from_path
+    run_name="__mp_main__")
+  File "/opt/conda/lib/python3.7/runpy.py", line 263, in run_path
+    pkg_name=pkg_name, script_name=fname)
+  File "/opt/conda/lib/python3.7/runpy.py", line 96, in _run_module_code
+    mod_name, mod_spec, pkg_name, script_name)
+  File "/opt/conda/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/root/CassavaCompetition/experiment6.py", line 148, in <module>
+    wandb_run = wandb.init(project=flags['project'], name=flags['run_name'], config=flags)
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 612, in init
+    six.raise_from(Exception("problem"), error_seen)
+  File "<string>", line 3, in raise_from
+Exception: problem
+Problem at: /root/CassavaCompetition/experiment6.py 148 <module>
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 114, in _main
+    prepare(preparation_data)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 225, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 277, in _fixup_main_from_path
+    run_name="__mp_main__")
+  File "/opt/conda/lib/python3.7/runpy.py", line 263, in run_path
+    pkg_name=pkg_name, script_name=fname)
+  File "/opt/conda/lib/python3.7/runpy.py", line 96, in _run_module_code
+    mod_name, mod_spec, pkg_name, script_name)
+  File "/opt/conda/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/root/CassavaCompetition/experiment6.py", line 148, in <module>
+    wandb_run = wandb.init(project=flags['project'], name=flags['run_name'], config=flags)
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 612, in init
+    six.raise_from(Exception("problem"), error_seen)
+  File "<string>", line 3, in raise_from
+Exception: problem
+Problem at: /root/CassavaCompetition/experiment6.py 148 <module>
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+wandb: ERROR Abnormal program exit
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 114, in _main
+    prepare(preparation_data)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 225, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 277, in _fixup_main_from_path
+    run_name="__mp_main__")
+  File "/opt/conda/lib/python3.7/runpy.py", line 263, in run_path
+    pkg_name=pkg_name, script_name=fname)
+  File "/opt/conda/lib/python3.7/runpy.py", line 96, in _run_module_code
+    mod_name, mod_spec, pkg_name, script_name)
+  File "/opt/conda/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/root/CassavaCompetition/experiment6.py", line 148, in <module>
+    wandb_run = wandb.init(project=flags['project'], name=flags['run_name'], config=flags)
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 612, in init
+    six.raise_from(Exception("problem"), error_seen)
+  File "<string>", line 3, in raise_from
+Exception: problem
+Problem at: /root/CassavaCompetition/experiment6.py 148 <module>
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+wandb: ERROR Abnormal program exit
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 114, in _main
+    prepare(preparation_data)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 225, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 277, in _fixup_main_from_path
+    run_name="__mp_main__")
+  File "/opt/conda/lib/python3.7/runpy.py", line 263, in run_path
+    pkg_name=pkg_name, script_name=fname)
+  File "/opt/conda/lib/python3.7/runpy.py", line 96, in _run_module_code
+    mod_name, mod_spec, pkg_name, script_name)
+  File "/opt/conda/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/root/CassavaCompetition/experiment6.py", line 148, in <module>
+    wandb_run = wandb.init(project=flags['project'], name=flags['run_name'], config=flags)
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 612, in init
+    six.raise_from(Exception("problem"), error_seen)
+  File "<string>", line 3, in raise_from
+Exception: problem
+Problem at: /root/CassavaCompetition/experiment6.py 148 <module>
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+wandb: ERROR Abnormal program exit
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 575, in init
+    run = wi.init()
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 371, in init
+    use_redirect=use_redirect,
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/backend/backend.py", line 81, in ensure_launched
+    self.wandb_process.start()
+  File "/opt/conda/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+  File "/opt/conda/lib/python3.7/multiprocessing/context.py", line 284, in _Popen
+    return Popen(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+  File "/opt/conda/lib/python3.7/multiprocessing/popen_spawn_posix.py", line 42, in _launch
+    prep_data = spawn.get_preparation_data(process_obj._name)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 143, in get_preparation_data
+    _check_not_importing_main()
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 136, in _check_not_importing_main
+    is not going to be frozen to produce an executable.''')
+RuntimeError: 
+        An attempt has been made to start a new process before the
+        current process has finished its bootstrapping phase.
+
+        This probably means that you are not using fork to start your
+        child processes and you have forgotten to use the proper idiom
+        in the main module:
+
+            if __name__ == '__main__':
+                freeze_support()
+                ...
+
+        The "freeze_support()" line can be omitted if the program
+        is not going to be frozen to produce an executable.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 105, in spawn_main
+    exitcode = _main(fd)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 114, in _main
+    prepare(preparation_data)
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 225, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+  File "/opt/conda/lib/python3.7/multiprocessing/spawn.py", line 277, in _fixup_main_from_path
+    run_name="__mp_main__")
+  File "/opt/conda/lib/python3.7/runpy.py", line 263, in run_path
+    pkg_name=pkg_name, script_name=fname)
+  File "/opt/conda/lib/python3.7/runpy.py", line 96, in _run_module_code
+    mod_name, mod_spec, pkg_name, script_name)
+  File "/opt/conda/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/root/CassavaCompetition/experiment6.py", line 148, in <module>
+    wandb_run = wandb.init(project=flags['project'], name=flags['run_name'], config=flags)
+  File "/opt/conda/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 612, in init
+    six.raise_from(Exception("problem"), error_seen)
+  File "<string>", line 3, in raise_from
+Exception: problem
+Problem at: /root/CassavaCompetition/experiment6.py 148 <module>
+Traceback (most recent call last):
+  File "experiment6.py", line 149, in <module>
+    xmp.spawn(map_fn, args=(flags,wandb_run,), nprocs=8, start_method='fork')
+  File "/opt/conda/lib/python3.7/site-packages/torch_xla/distributed/xla_multiprocessing.py", line 382, in spawn
+    return _run_direct(fn, args, nprocs, join, daemon, start_method)
+  File "/opt/conda/lib/python3.7/site-packages/torch_xla/distributed/xla_multiprocessing.py", line 346, in _run_direct
+    fn, args=args, nprocs=nprocs, join=join, daemon=daemon)
+  File "/opt/conda/lib/python3.7/site-packages/torch/multiprocessing/spawn.py", line 230, in spawn
+    return start_processes(fn, args, nprocs, join, daemon, start_method='spawn')
+  File "/opt/conda/lib/python3.7/site-packages/torch/multiprocessing/spawn.py", line 188, in start_processes
+    while not context.join():
+  File "/opt/conda/lib/python3.7/site-packages/torch/multiprocessing/spawn.py", line 144, in join
+    exit_code=exitcode
+torch.multiprocessing.spawn.ProcessExitedException: process 0 terminated with exit code 1
