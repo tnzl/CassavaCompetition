@@ -2,3 +2,7 @@ pytorch-xla-env-setup.py
 torch-nightly-cp37-cp37m-linux_x86_64.whl
 torch_xla-nightly-cp37-cp37m-linux_x86_64.whl
 torchvision-nightly-cp37-cp37m-linux_x86_64.whl
+
+wandb/*
+
+__pycache__/*

@@ -22,7 +22,7 @@ import pandas as pd
 from sklearn.model_selection import StratifiedKFold   
 from sklearn import metrics
 from sklearn import model_selection
-from data_script import CassavaDataset, TestDataset
+from data import CassavaDataset, TestDataset
 
 def get_train_transforms(flags):
         return Compose([
