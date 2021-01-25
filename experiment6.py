@@ -121,6 +121,7 @@ def map_fn(index, flags, wandb_run):
                       lr_schedule=lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1),
                       wandb_run=wandb_run)
     learner.fit()
+    learner.verboser("Complete!")
  #   xm.rendezvous('barrier-2')
 
 flags = {
@@ -133,7 +134,7 @@ flags = {
     'model': 'resnext50_32x4d',
     'pretrained': True,
     'batch_size': 64,
-    'num_workers': 0,
+    'num_workers': 2,
     'lr': 0.001,
     'seed' : 1234,
     'verbose' : True
@@ -142,8 +143,8 @@ flags['img_size'] = 320
 flags['batch_size'] = 32
 flags['num_workers'] = 4
 flags['seed'] = 1234
-flags['debug'] = True
-flags['num_epochs'] = 2 if flags['debug'] else 25
+flags['debug'] = False
+flags['num_epochs'] = 2 if flags['debug'] else 5
 
 # wandb_run = wandb.init(project=flags['project'], name=flags['run_name'], config=flags)
 wandb_run = None

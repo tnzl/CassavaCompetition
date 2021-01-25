@@ -55,8 +55,8 @@ class Learner():
         name = self.run_name+f'_{self.num_epochs}_epochs.pth'
         if self.tpu:
             xm.rendezvous('save_model')
-            if self.verbose:
-                xm.master_print('save model')
+            # if self.verbose:
+            #     xm.master_print('save model')
             xm.save(self.net.state_dict(), name)
         else:
             torch.save(self.net.state_dict(), name)
