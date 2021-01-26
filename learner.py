@@ -115,7 +115,7 @@ class Learner:
                 'batch_loss' : loss.item(),
                 'batch_corrects' : batch_corrects
             }
-            self.cb_manager.on_batch_end(batch, sd)
+            self.cb_manager.on_batch_end(batch_num, sd)
             del data, targets, output, best_guesses, batch_corrects, loss, sd
         #stats
         stats = {
@@ -211,5 +211,5 @@ class Learner:
         
         self.verboser(f"Finished training. Train time was: {time.time() - train_start}") 
 
-        self.cb_manager.on_fit_end(self, state_dict=None)
+        self.cb_manager.on_fit_end()
         return

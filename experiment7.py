@@ -2,6 +2,7 @@ import torch
 import torchvision
 from data import get_dl
 from learner import Learner
+from callbacks import PrintCallback
 
 flags = {}
 flags['project'] = "cassava-leaf-disease-classification"
@@ -38,6 +39,7 @@ learner = Learner(net,
                 dl=get_dl(flags), 
                 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"), 
                 num_epochs=flags['num_epochs'], 
+                cbs=[PrintCallback()],
                 bs=flags['batch_size'], 
                 verbose=True, 
                 tpu=False, 
