@@ -95,6 +95,7 @@ class TestDataset():
         img = self.read_img(choice(self.test))
         plt.imshow(img)
 
+
 def get_train_transforms(flags):
         return Compose([
                 RandomResizedCrop(flags['img_size'], flags['img_size']),
