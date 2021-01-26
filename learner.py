@@ -5,11 +5,13 @@ import time
 import torch
 
 # xla 
-import torch_xla.core.xla_model as xm
-import torch_xla.distributed.parallel_loader as pl
+try:
+    import torch_xla.core.xla_model as xm
+    import torch_xla.distributed.parallel_loader as pl
+except:
+    pass
 
-class Learner():
-    
+class Learner:
     def __init__(self, net, optimizer, loss_fn, dl, device, num_epochs, bs=8, run_name="NA", verbose=True, tpu=False, seed=None, metrics=None, lr_schedule=None, wandb_run=None):
         '''
         Initialize.
@@ -31,7 +33,7 @@ class Learner():
         if self.seed:
             self.seed_everything(self.seed)
         
-        self.net = self.net.to(self.device)
+        self.net = self.net.to(self.device).double()
         
         if self.tpu:
             import torch_xla.core.xla_model as xm
