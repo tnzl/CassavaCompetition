@@ -4,6 +4,9 @@ import time
 #torch
 import torch
 
+#my
+from callbacks import Callback, CallbackManager
+
 # xla 
 try:
     import torch_xla.core.xla_model as xm
@@ -29,6 +32,8 @@ class Learner:
         self.wandb_run = wandb_run
         self.device = device
         self.run_name = run_name
+        self.epoch = None
+        self.cb_manager = CallbackManager(self)
         
         if self.seed:
             self.seed_everything(self.seed)
@@ -153,6 +158,8 @@ class Learner:
         '''
         Run the complete training loop.
         '''
+        self.cb_manager.on_fit_begin()
+
         self.verboser('Starting to fit...')
             
         train_start = time.time()
@@ -160,7 +167,8 @@ class Learner:
         
         for epoch in range(self.num_epochs):
             epoch_start = time.time()
-            
+            self.epoch = epoch
+
             #train
             train_stats = self.train_one_epoch()
             train_stats['epoch'] = epoch
@@ -191,4 +199,6 @@ class Learner:
         self.save_model()
         
         self.verboser(f"Finished training. Train time was: {time.time() - train_start}") 
+
+        on_fit_end(self, state_dict=None)
         return
