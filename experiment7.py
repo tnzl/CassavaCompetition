@@ -25,7 +25,7 @@ net = torchvision.models.resnet18(pretrained=True).double()
 count = 0
 for param in net.parameters():
     count +=1
-    print(param.shape,count)
+    # print(param.shape,count)
     param.requires_grad = False
 net.fc = torch.nn.Linear(net.fc.in_features, 5)
 
@@ -46,5 +46,4 @@ learner = Learner(net,
                 lr_schedule=torch.optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1),
                 wandb_run=wandb_run)
 
-print(learner.device)
-# learner.fit()
+learner.fit()

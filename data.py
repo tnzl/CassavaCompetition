@@ -129,7 +129,7 @@ def get_dl(flags):
     }
 
     train = pd.read_csv(flags['data_root']+'/train.csv')
-    k_fold = StratifiedKFold(n_splits=5).split(train, train['label'])
+    k_fold = StratifiedKFold(n_splits=12 if flags['debug'] else 5).split(train, train['label'])
     train_idx, val_idx = list(k_fold)[0]
     train_idx = val_idx if flags['debug'] else train_idx
     

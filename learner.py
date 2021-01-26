@@ -15,7 +15,7 @@ except:
     pass
 
 class Learner:
-    def __init__(self, net, optimizer, loss_fn, dl, device, num_epochs, bs=8, run_name="NA", verbose=True, tpu=False, seed=None, metrics=None, lr_schedule=None, wandb_run=None):
+    def __init__(self, net, optimizer, loss_fn, dl, device, num_epochs, cbs=[], bs=8, run_name="NA", verbose=True, tpu=False, seed=None, metrics=None, lr_schedule=None, wandb_run=None):
         '''
         Initialize.
         '''
@@ -34,15 +34,16 @@ class Learner:
         self.run_name = run_name
         self.epoch = None
         self.cb_manager = CallbackManager(self)
+        self.cbs = cbs
         
         if self.seed:
             self.seed_everything(self.seed)
         
         self.net = self.net.to(self.device).double()
         
-        if self.tpu:
-            import torch_xla.core.xla_model as xm
-            import torch_xla.distributed.parallel_loader as pl
+        self.verboser('Training on : '+str(self.device))
+        self.verboser('Number of callbacks = '+str(len(self.cbs)))
+        
     
     def verboser(self, msg):
         if self.wandb_run:
@@ -90,6 +91,7 @@ class Learner:
         
         #train
         for batch_num, batch in enumerate(dl):
+            self.cb_manager.on_batch_begin(batch_num)
             data, targets = batch 
             if not self.tpu:
                 data = data.to(self.device)
@@ -106,9 +108,15 @@ class Learner:
                 
             cum_loss += loss.item()
             best_guesses = torch.argmax(output, 1)
-            num_correct += torch.eq(targets, best_guesses).sum().item()
+            batch_corrects = torch.eq(targets, best_guesses).sum().item()
+            num_correct += batch_corrects
             total_guesses += len(targets)
-        
+            sd = {
+                'batch_loss' : loss.item(),
+                'batch_corrects' : batch_corrects
+            }
+            self.cb_manager.on_batch_end(batch, sd)
+            del data, targets, output, best_guesses, batch_corrects, loss, sd
         #stats
         stats = {
             'train_accuracy' : num_correct/total_guesses * 100,
@@ -166,6 +174,8 @@ class Learner:
         torch.manual_seed(self.seed)    
         
         for epoch in range(self.num_epochs):
+            self.cb_manager.on_epoch_begin(epoch)
+
             epoch_start = time.time()
             self.epoch = epoch
 
@@ -192,6 +202,7 @@ class Learner:
                           f"\n Val acc : {val_stats['val_accuracy']}"+
                           f"\n Val loss : {val_stats['val_loss']}") 
             
+            self.cb_manager.on_epoch_end(epoch, state_dict=val_stats.update(train_stats))
             
             
         
@@ -200,5 +211,5 @@ class Learner:
         
         self.verboser(f"Finished training. Train time was: {time.time() - train_start}") 
 
-        on_fit_end(self, state_dict=None)
+        self.cb_manager.on_fit_end(self, state_dict=None)
         return
