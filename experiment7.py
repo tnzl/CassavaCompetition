@@ -1,6 +1,6 @@
 import torch
 import torchvision
-from data import get_dl
+from data import get_dl, Data
 from learner import Learner
 from callbacks import PrintCallback
 
@@ -22,6 +22,19 @@ flags['seed'] = 1234
 flags['debug'] = True
 flags['num_epochs'] = 2 if flags['debug'] else 5
 
+data = Data(
+    flags['data_root'], 
+    flags['num_workers'], 
+    bs=flags['batch_size'], 
+    debug=flags['debug'], 
+    # sampler=self.get_default_sampler(), 
+    # transforms=self.get_default_transform(), 
+    fold=0, 
+    num_folds=5, 
+    img_size=flags['img_size'], 
+    tpu=0
+    )
+
 net = torchvision.models.resnet18(pretrained=True).double()
 count = 0
 for param in net.parameters():
@@ -36,7 +49,7 @@ wandb_run = None
 learner = Learner(net, 
                 optimizer=optimizer, 
                 loss_fn=torch.nn.CrossEntropyLoss(), 
-                dl=get_dl(flags), 
+                dl=data.get_dl(), 
                 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"), 
                 num_epochs=flags['num_epochs'], 
                 cbs=[PrintCallback()],

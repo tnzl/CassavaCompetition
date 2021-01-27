@@ -97,18 +97,21 @@ class TestDataset():
 
 class Data:
 
-    def __init__(self, data_root, num_workers, bs=8, debug=False, sampler=self.get_default_sampler(), transforms=self.get_default_transform(), fold=0, num_folds=5, img_size=256, tpu=False):
+    def __init__(self, data_root, num_workers, bs=8, debug=False, sampler=None, transforms=None, fold=0, num_folds=5, img_size=256, tpu=False):
         self.tpu = tpu
         self.data_root = data_root
         self.fold = fold
+        self.num_workers = num_workers
         self.num_folds = num_folds
         self.img_size = img_size
         self.bs = bs
         self.debug = debug
-        self.transforms = transforms
-        self.sampler = sampler
+        if transforms is None:
+            self.transforms = self.get_default_transform()
+        if sampler is None:
+            self.sampler = self.get_default_sampler()
         self.ds = self.get_ds()
-        self.dl = self.get_dl()
+        self.dl = None
 
     def get_default_sampler(self):
         if self.tpu:
@@ -135,7 +138,7 @@ class Data:
     def get_default_transform(self):
         t = {
             'train' : Compose([
-                RandomResizedCrop(flags['img_size'], flags['img_size']),
+                RandomResizedCrop(self.img_size, self.img_size),
                 Transpose(p=0.5),
                 HorizontalFlip(p=0.5),
                 VerticalFlip(p=0.5),
@@ -148,19 +151,19 @@ class Data:
                 ToTensorV2(p=1.0),
             ], p=1.),
             'val' : Compose([
-                Resize(int(flags['img_size']*1.1), int(flags['img_size']*1.1)),
-                CenterCrop(flags['img_size'], flags['img_size'], p=1.),
+                Resize(int(self.img_size*1.1), int(self.img_size*1.1)),
+                CenterCrop(self.img_size, self.img_size, p=1.),
                 Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225], max_pixel_value=255.0, p=1.0),
                 ToTensorV2(p=1.0),
             ], p=1.)
             }
-            return t
+        return t
     
     def get_ds(self):
         train = pd.read_csv(self.data_root+'/train.csv')
-        k_fold = StratifiedKFold(n_splits=20 if flags['debug'] else self.num_folds).split(train, train['label'])
-        train_idx, val_idx = list(k_fold)[fold]
-        train_idx = val_idx if flags['debug'] else train_idx
+        k_fold = StratifiedKFold(n_splits=20 if self.debug else self.num_folds).split(train, train['label'])
+        train_idx, val_idx = list(k_fold)[self.fold]
+        train_idx = val_idx if self.debug else train_idx
         ds = {
             'train' : CassavaDataset(train.loc[train_idx,:], self.data_root, transforms=self.transforms['train']),
             'val' : CassavaDataset(train.loc[val_idx,:], self.data_root, transforms=self.transforms['val']),
@@ -174,16 +177,17 @@ class Data:
                 self.ds['train'],
                 batch_size=self.bs,
                 sampler=self.sampler['train'],
-                num_workers=num_workers,
+                num_workers=self.num_workers,
                 drop_last=True),
             'val' :  torch.utils.data.DataLoader(
-                ds['val'],
+                self.ds['val'],
                 batch_size=self.bs,
                 sampler=self.sampler['val'],
-                num_workers=num_workers,
+                num_workers=self.num_workers,
                 drop_last=False)
         }
-        return dl
+        self.dl = dl
+        return self.dl
 
     def cleanup(self):
         pass

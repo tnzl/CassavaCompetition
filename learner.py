@@ -47,7 +47,7 @@ class Learner:
     
     def verboser(self, msg):
         if self.wandb_run:
-            self.wandb_run.log({f'[Process {self.tpu}]': msg})
+            self.wandb_run.log({f'[Process {int(self.tpu)}]': msg})
         if self.verbose:
             print(f'[Process {self.tpu}]:'+msg)
             return 
