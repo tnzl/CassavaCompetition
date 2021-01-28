@@ -1,5 +1,6 @@
 #misc
 import time
+import gc
 
 #torch
 import torch
@@ -117,11 +118,15 @@ class Learner:
             }
             self.cb_manager.on_batch_end(batch_num, sd)
             del data, targets, output, best_guesses, batch_corrects, loss, sd
+            gc.collect()
         #stats
         stats = {
             'train_accuracy' : num_correct/total_guesses * 100,
             'train_loss' : cum_loss/total_guesses
         }
+        #clear mem
+        del num_correct, cum_loss, total_guesses, dl
+        gc.collect()
         return stats
     
     def validate(self):
@@ -160,6 +165,9 @@ class Learner:
             'val_accuracy' : num_correct/total_guesses * 100,
             'val_loss' : cum_loss/total_guesses
         }
+
+        del elapsed_eval_time, total_guesses, num_correct, cum_loss, best_guesses, output, data, targets, eval_start
+        gc.collect()
         return stats
     
     def fit(self):
@@ -204,7 +212,8 @@ class Learner:
             
             self.cb_manager.on_epoch_end(epoch, state_dict=val_stats.update(train_stats))
             
-            
+            del epoch_end, val_start, epoch_start
+            gc.collect()
         
         #save model
         self.save_model()
@@ -212,4 +221,6 @@ class Learner:
         self.verboser(f"Finished training. Train time was: {time.time() - train_start}") 
 
         self.cb_manager.on_fit_end()
+
+        gc.collect()
         return
