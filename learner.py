@@ -114,8 +114,11 @@ class Learner:
             total_guesses += len(targets)
             sd = {
                 'batch_loss' : loss.item(),
-                'batch_corrects' : batch_corrects
+                'batch_corrects' : batch_corrects,
+                'batch' : batch_num
             }
+            if self.wandb_run:
+                self.wandb_run.log(sd)
             self.cb_manager.on_batch_end(batch_num, sd)
             del data, targets, output, best_guesses, batch_corrects, loss, sd
             gc.collect()
@@ -191,7 +194,7 @@ class Learner:
             train_stats = self.train_one_epoch()
             train_stats['epoch'] = epoch
             if self.wandb_run:
-                wandb_run.log(train_stats)
+                self.wandb_run.log(train_stats)
             
             #validate
             val_start = time.time()
@@ -199,7 +202,7 @@ class Learner:
             val_stats['epoch'] = epoch
             epoch_end = time.time()
             if self.wandb_run:
-                wandb_run.log(val_stats)
+                self.wandb_run.log(val_stats)
             
             if self.lr_schedule:
                 self.lr_schedule.step()

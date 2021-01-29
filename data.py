@@ -6,7 +6,12 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 from torch.utils.data import Dataset, DataLoader
-#from torchvision import transforms, utils
+
+# xla 
+try:
+    import torch_xla.core.xla_model as xm
+except:
+    pass
 
 #aug
 from albumentations import (
@@ -108,21 +113,25 @@ class Data:
         self.debug = debug
         if transforms is None:
             self.transforms = self.get_default_transform()
+        else:
+            self.transforms = transforms
+        self.ds = self.get_ds()
         if sampler is None:
             self.sampler = self.get_default_sampler()
-        self.ds = self.get_ds()
+        else:
+            self.sampler = sampler
         self.dl = None
 
     def get_default_sampler(self):
         if self.tpu:
             sampler = {
                 'train' : torch.utils.data.distributed.DistributedSampler(
-                    ds['train'],
+                    self.ds['train'],
                     num_replicas=xm.xrt_world_size(), #divide dataset among this many replicas
                     rank=xm.get_ordinal(), #which replica/device/core
                     shuffle=True),
                 'val' : torch.utils.data.distributed.DistributedSampler(
-                    ds['val'],
+                    self.ds['val'],
                     num_replicas=xm.xrt_world_size(),
                     rank=xm.get_ordinal(),
                     shuffle=False)
