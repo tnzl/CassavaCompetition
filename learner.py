@@ -16,7 +16,7 @@ except:
     pass
 
 class Learner:
-    def __init__(self, net, optimizer, loss_fn, dl, device, num_epochs, cbs=[], bs=8, run_name="NA", verbose=True, tpu=False, seed=None, metrics=None, lr_schedule=None, wandb_run=None):
+    def __init__(self, net, optimizer, loss_fn, dl, device, num_epochs, cbs=[], bs=8, run_name="NA", verbose=True, tpu=False, seed=None, metrics=None, lr_schedule=None):
         '''
         Initialize.
         '''
@@ -30,7 +30,6 @@ class Learner:
         self.tpu = tpu
         self.num_epochs = num_epochs
         self.verbose = verbose
-        self.wandb_run = wandb_run
         self.device = device
         self.run_name = run_name
         self.epoch = None
@@ -47,8 +46,6 @@ class Learner:
         
     
     def verboser(self, msg):
-        if self.wandb_run:
-            self.wandb_run.log({f'[Process {int(self.tpu)}]': msg})
         if self.verbose:
             print(f'[Process {self.tpu}]:'+msg)
             return 
@@ -107,7 +104,7 @@ class Learner:
             else:
                 self.optimizer.step()
                 
-            cum_loss += loss.item()
+            cum_loss += loss.detach().item()
             best_guesses = torch.argmax(output, 1)
             batch_corrects = torch.eq(targets, best_guesses).sum().item()
             num_correct += batch_corrects
@@ -117,8 +114,6 @@ class Learner:
                 'batch_corrects' : batch_corrects,
                 'batch' : batch_num
             }
-            if self.wandb_run:
-                self.wandb_run.log(sd)
             self.cb_manager.on_batch_end(batch_num, sd)
             del data, targets, output, best_guesses, batch_corrects, loss, sd
             gc.collect()
@@ -156,7 +151,7 @@ class Learner:
 
                 output = self.net(data)
                 best_guesses = torch.argmax(output, 1)
-                cum_loss += self.loss_fn(output, targets).item()
+                cum_loss += self.loss_fn(output, targets).detach().item()
                 num_correct += torch.eq(targets, best_guesses).sum().item()
                 total_guesses += len(targets)
 
@@ -192,17 +187,11 @@ class Learner:
 
             #train
             train_stats = self.train_one_epoch()
-            train_stats['epoch'] = epoch
-            if self.wandb_run:
-                self.wandb_run.log(train_stats)
             
             #validate
             val_start = time.time()
             val_stats = self.validate()
-            val_stats['epoch'] = epoch
             epoch_end = time.time()
-            if self.wandb_run:
-                self.wandb_run.log(val_stats)
             
             if self.lr_schedule:
                 self.lr_schedule.step()
@@ -213,9 +202,10 @@ class Learner:
                           f"\n Val acc : {val_stats['val_accuracy']}"+
                           f"\n Val loss : {val_stats['val_loss']}") 
             
-            self.cb_manager.on_epoch_end(epoch, state_dict=val_stats.update(train_stats))
+            val_stats.update(train_stats)
+            self.cb_manager.on_epoch_end(epoch, state_dict=val_stats)
             
-            del epoch_end, val_start, epoch_start
+            del epoch_end, train_stats, val_start, val_stats, epoch_start
             gc.collect()
         
         #save model

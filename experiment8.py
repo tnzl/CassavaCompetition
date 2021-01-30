@@ -1,5 +1,6 @@
 from learner import Learner
 from data import Data
+from callbacks import WandbCallback
 import wandb
 
 import torch_xla.core.xla_model as xm
@@ -39,11 +40,12 @@ def map_fn(index, flags, wandb_run):
                       num_epochs=flags['num_epochs'], 
                       bs=flags['batch_size'], 
                       verbose=True, 
+                      cbs = [WandbCallback(wandb_run)],
                       tpu=index+1, 
                       seed=1234, 
                       metrics=None, 
                       lr_schedule=optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1),
-                      wandb_run=wandb_run)
+                    )
     learner.fit()
     learner.verboser("Complete!")
  #   xm.rendezvous('barrier-2')
@@ -64,10 +66,10 @@ flags = {
     'verbose' : True
 }
 flags['img_size'] = 320
-flags['batch_size'] = 32
-flags['num_workers'] = 4
+flags['batch_size'] = 16
+flags['num_workers'] = 2
 flags['seed'] = 1234
-flags['debug'] = True
+flags['debug'] = False
 flags['num_epochs'] = 2 if flags['debug'] else 5
 
 wandb_run = wandb.init(project=flags['project'], name=flags['run_name'], config=flags)
