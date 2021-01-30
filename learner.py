@@ -78,7 +78,7 @@ class Learner:
         self.net = self.net.train()
         
         #Dataloader
-        dl = self.dl['val']
+        dl = self.dl['train']
         if self.tpu:
             dl = pl.ParallelLoader(dl, [self.device]).per_device_loader(self.device)
         
@@ -110,9 +110,8 @@ class Learner:
             num_correct += batch_corrects
             total_guesses += len(targets)
             sd = {
-                'batch_loss' : loss.item(),
-                'batch_corrects' : batch_corrects,
-                'batch' : batch_num
+                'train_batch_loss' : loss.detach().item(),
+                'train_batch_corrects' : batch_corrects
             }
             self.cb_manager.on_batch_end(batch_num, sd)
             del data, targets, output, best_guesses, batch_corrects, loss, sd
