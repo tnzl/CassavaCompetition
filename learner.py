@@ -172,64 +172,11 @@ class Learner:
             'val_accuracy' : acc*100
         }
 
+        self.verboser(f"Finished evaluation. Evaluation time was: {time.time() - eval_start}") 
         del acc, loss, o, t, fin_outputs, fin_targets
         gc.collect()
 
         return stats
-
-
-
-
-
-
-
-
-
-
-                
-
-
-
-    # def validate(self):
-    #     '''
-    #     Validate the model.
-    #     '''
-    #     self.net = self.net.eval()
-    #     eval_start = time.time()
-    #     with torch.no_grad():
-    #         #stats
-    #         num_correct = 0
-    #         total_guesses = 0
-    #         cum_loss = 0
-            
-    #         dl = self.dl['val']
-    #         if self.tpu:
-    #             dl = pl.ParallelLoader(dl, [self.device]).per_device_loader(self.device)
-
-    #         for batch_num, batch in enumerate(dl):
-    #             data, targets = batch
-    #             if not self.tpu:
-    #                 data = data.to(self.device)
-    #                 targets = targets.to(self.device)
-
-    #             output = self.net(data)
-    #             best_guesses = torch.argmax(output, 1)
-    #             cum_loss += self.loss_fn(output, targets).detach().item()
-    #             num_correct += torch.eq(targets, best_guesses).sum().item()
-    #             total_guesses += len(targets)
-
-    #     elapsed_eval_time = time.time() - eval_start
-    #     self.verboser(f"Finished evaluation. Evaluation time was: {elapsed_eval_time}" )
-    #     self.verboser(f"Guessed{num_correct} of {total_guesses} correctly for {num_correct/total_guesses * 100}% accuracy and loss of {cum_loss/total_guesses}.")
-
-    #     stats = {
-    #         'val_accuracy' : num_correct/total_guesses * 100,
-    #         'val_loss' : cum_loss/total_guesses
-    #     }
-
-    #     del elapsed_eval_time, total_guesses, num_correct, cum_loss, best_guesses, output, data, targets, eval_start
-    #     gc.collect()
-    #     return stats
     
     def fit(self):
         '''

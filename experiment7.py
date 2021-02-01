@@ -20,7 +20,7 @@ flags['img_size'] = 320
 flags['batch_size'] = 32
 flags['num_workers'] = 4
 flags['seed'] = 1234
-flags['debug'] = False
+flags['debug'] = True
 flags['num_epochs'] = 2 if flags['debug'] else 5
 
 data = Data(
