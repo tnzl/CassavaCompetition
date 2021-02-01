@@ -69,7 +69,7 @@ flags['img_size'] = 320
 flags['batch_size'] = 16
 flags['num_workers'] = 2
 flags['seed'] = 1234
-flags['debug'] = False
+flags['debug'] = True
 flags['num_epochs'] = 2 if flags['debug'] else 5
 
 wandb_run = wandb.init(project=flags['project'], name=flags['run_name'], config=flags)
