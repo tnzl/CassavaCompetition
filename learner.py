@@ -18,7 +18,7 @@ except:
     pass
 
 class Learner:
-    def __init__(self, net, optimizer, loss_fn, dl, device, num_epochs, cbs=[], bs=8, run_name="NA", verbose=True, tpu=False, seed=None, metrics=None, lr_schedule=None):
+    def __init__(self, net, optimizer, loss_fn, dl, device, num_epochs, bs, cbs=[], run_name="NA", verbose=True, tpu=False, seed=None, metrics=None, lr_schedule=None):
         '''
         Initialize.
         '''
@@ -37,6 +37,7 @@ class Learner:
         self.epoch = None
         self.cb_manager = CallbackManager(self)
         self.cbs = cbs
+        self.bs = bs
         
         if self.seed:
             self.seed_everything(self.seed)
@@ -47,9 +48,10 @@ class Learner:
         self.verboser('Number of callbacks = '+str(len(self.cbs)))
         
     
-    def verboser(self, msg):
+    def verboser(self, msg, logger= print):
+
         if self.verbose:
-            print(f'[Process {self.tpu}]:'+msg)
+            logger(f'[Process {self.tpu}]:'+msg)
             return 
         return
             
@@ -72,61 +74,124 @@ class Learner:
     
     def load_model(self, path):
         pass
-    
+
     def train_one_epoch(self):
-        '''
-        Train the model for one epoch.
-        '''
-        self.net = self.net.train()
-        
-        #Dataloader
+        self.net = self.net.train() # put model in training mode
         dl = self.dl['train']
+        fin_correct = []
+        fin_loss = []
+        start_time = time.time()
+
         if self.tpu:
-            dl = pl.ParallelLoader(dl, [self.device]).per_device_loader(self.device)
-        
-        #Stats init
-        num_correct = 0
-        total_guesses = 0
-        cum_loss = 0
-        
-        #train
-        for batch_num, batch in enumerate(dl):
-            self.cb_manager.on_batch_begin(batch_num)
-            data, targets = batch 
-            if not self.tpu:
-                data = data.to(self.device)
-                targets = targets.to(self.device)
-            output = self.net(data)
-            loss = self.loss_fn(output, targets)
+            dl = pl.MpDeviceLoader(dl, self.device)
+
+        for bi, batch in enumerate(dl):
+            self.cb_manager.on_batch_begin(bi)
+            images, targets = batch
+
+            # pass image to model
             self.optimizer.zero_grad()
+            outputs = self.net(images)
+            
+            # calculate loss
+            loss = self.loss_fn(outputs, targets)
+            
+            # backpropagate
             loss.backward()
             
+            # Use PyTorch XLA optimizer stepping
             if self.tpu:
                 xm.optimizer_step(self.optimizer)
             else:
                 self.optimizer.step()
-                
-            cum_loss += loss.detach().item()
-            best_guesses = torch.argmax(output, 1)
-            batch_corrects = torch.eq(targets, best_guesses).sum().item()
-            num_correct += batch_corrects
-            total_guesses += len(targets)
+            
+            # Step the scheduler
+            if self.lr_schedule is not None: self.lr_schedule.step()
+            
+            #log
+            fin_loss.append(loss.detach().cpu().item())
+            fin_correct.append(torch.eq(targets, torch.argmax(outputs, 1)).sum().detach().cpu().item())
             sd = {
-                'train_batch_loss' : loss.detach().item(),
-                'train_batch_corrects' : batch_corrects
+                'train_batch_loss': fin_loss[-1],
+                'train_batch_corrects': fin_correct[-1]
             }
-            self.cb_manager.on_batch_end(batch_num, sd)
-            del data, targets, output, best_guesses, batch_corrects, loss, sd
+
+            #clear mem
+            del loss, outputs, targets, images
             gc.collect()
-        #stats
+
+            self.cb_manager.on_batch_end(bi, sd)
+
+        loss = sum(fin_loss) / len(fin_loss)
+        acc = sum(fin_correct) / (self.bs * (bi + 1))
+        if self.tpu:
+            loss = xm.mesh_reduce('loss_reduce',loss, lambda x: sum(x) / len(x)) 
+            acc = xm.mesh_reduce('acc_reduce',acc, lambda x: sum(x) / len(x))
+            self.verboser(f'Finished epoch {self.epoch} train. Train time was: {time.time()-start_time} and bi: {bi}', logger=xm.master_print)
         stats = {
-            'train_accuracy' : num_correct/total_guesses * 100,
-            'train_loss' : cum_loss/total_guesses
+            'train_accuracy' : acc * 100,
+            'train_loss' : loss
         }
         #clear mem
-        del num_correct, cum_loss, total_guesses, dl
+        del acc, loss, fin_correct, fin_loss, dl
         gc.collect()
+        
         return stats
+
+    # def train_one_epoch(self):
+    #     '''
+    #     Train the model for one epoch.
+    #     '''
+    #     self.net = self.net.train()
+        
+    #     #Dataloader
+    #     dl = self.dl['train']
+    #     if self.tpu:
+    #         dl = pl.ParallelLoader(dl, [self.device]).per_device_loader(self.device)
+        
+    #     #Stats init
+    #     num_correct = 0
+    #     total_guesses = 0
+    #     cum_loss = 0
+        
+    #     #train
+    #     for batch_num, batch in enumerate(dl):
+    #         self.cb_manager.on_batch_begin(batch_num)
+    #         data, targets = batch 
+    #         if not self.tpu:
+    #             data = data.to(self.device)
+    #             targets = targets.to(self.device)
+    #         output = self.net(data)
+    #         loss = self.loss_fn(output, targets)
+    #         self.optimizer.zero_grad()
+    #         loss.backward()
+            
+    #         if self.tpu:
+    #             xm.optimizer_step(self.optimizer)
+    #         else:
+    #             self.optimizer.step()
+                
+    #         cum_loss += loss.detach().item()
+    #         best_guesses = torch.argmax(output, 1)
+    #         batch_corrects = torch.eq(targets, torch.argmax(output, 1)).sum().item()
+    #         num_correct += batch_corrects
+    #         total_guesses += len(targets)
+    #         sd = {
+    #             'train_batch_loss' : loss.detach().item(),
+    #             'train_batch_corrects' : batch_corrects
+    #         }
+    #         self.cb_manager.on_batch_end(batch_num, sd)
+    #         del data, targets, output, best_guesses, batch_corrects, loss, sd
+    #         gc.collect()
+    #     #stats
+    #     stats = {
+    #         'train_accuracy' : num_correct/total_guesses * 100,
+    #         'train_loss' : cum_loss/total_guesses
+    #     }
+    #     #clear mem
+    #     del num_correct, cum_loss, total_guesses, dl
+    #     gc.collect()
+    #     return stats
     
     def validate(self):
         '''
