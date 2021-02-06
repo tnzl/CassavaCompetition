@@ -125,6 +125,6 @@ class Learner:
         acc_reduced = xm.mesh_reduce('acc_reduce', acc, lambda x: sum(x) / len(x))
             
         # xm.master_print(f'val. accuracy = {acc_reduced},\n val_time = {start_time-time.time()}')
-        self.verboser(f'val. accuracy = {acc_reduced},\n val_time = {start_time-time.time()}')
+        self.verboser(f'val. accuracy = {acc_reduced},\n val_time = {time.time()-start_time}')
 
     
