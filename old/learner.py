@@ -108,14 +108,8 @@ class Learner:
             # Step the scheduler
             if self.lr_schedule is not None: self.lr_schedule.step()
             
-            #log
-            fin_loss.append(loss.detach().cpu().item())
-            fin_correct.append(torch.eq(targets, torch.argmax(outputs, 1)).sum().detach().cpu().item())
-            sd = {
-                'train_batch_loss': fin_loss[-1],
-                'train_batch_corrects': fin_correct[-1]
-            }
-
+                    fin_correct = []
+        fin_loss = []
             #clear mem
             del loss, outputs, targets, images
             gc.collect()

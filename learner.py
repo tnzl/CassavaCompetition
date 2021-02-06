@@ -53,6 +53,8 @@ class Learner:
     def train_loop_fn(self):
         start_time = time.time()
         self.model.train() # put model in training mode
+        fin_correct = []
+        fin_loss = []
         for bi, d in enumerate(self.train_dl): # enumerate through the dataloader
             # xm.master_print(f'bi={bi}')
             # images = d['image'] # obtain the ids
@@ -75,10 +77,15 @@ class Learner:
             
             # Step the scheduler
             if self.lr_schedule is not None: self.lr_schedule.step()
-
-            sd={
-                'loss' : loss.detach().cpu().item()
+            
+            #log
+            fin_loss.append(loss.detach().cpu().item())
+            fin_correct.append(torch.eq(targets, torch.argmax(outputs, 1)).sum().detach().cpu().item())
+            sd = {
+                'train_batch_loss': fin_loss[-1],
+                'train_batch_corrects': fin_correct[-1]
             }
+
             self.cb_manager.on_batch_end(bi, sd)
         
         # since the loss is on all 8 cores, reduce the loss values and print the average

@@ -38,7 +38,7 @@ warnings.filterwarnings("ignore")
 os.environ['XLA_USE_BF16']="1"
 os.environ['XLA_TENSOR_ALLOCATOR_MAXSIZE'] = '100000000'
 
-def run(rank, flags, wandb_run):
+def run(rank, flags):
     xm.master_print('Starting run')
     global FLAGS
     torch.set_default_tensor_type('torch.FloatTensor')
@@ -71,11 +71,12 @@ def run(rank, flags, wandb_run):
         metrics=None, 
         lr_schedule=scheduler
         )
-
     gc.collect()
     
     xm.master_print(f'========== training fold {FLAGS["fold"]} for {FLAGS["epochs"]} epochs ==========')
     for i in range(flags['epochs']):
+        sd = {'epoch' : i}
+        # wandb_run.log(sd)
         # self.cb_manager.on_epoch_begin(epoch)
         xm.master_print(f'EPOCH {i}:')
         # train one epoch
@@ -123,10 +124,10 @@ FLAGS = {
     'batch_size': 128,
     'num_workers': 4,
     'lr': 3e-4,
-    'epochs': 10, 
+    'epochs': 2, 
     'seed':1111
 }
 wandb_run = wandb.init(project=FLAGS['project'], name=FLAGS['run_name'], config=FLAGS)
 start_time = time.time()
-xmp.spawn(run, args=(FLAGS, wandb_run,), nprocs=8, start_method='fork')
+xmp.spawn(run, args=(FLAGS,), nprocs=8, start_method='fork')
 print('time taken: ', time.time()-start_time)
