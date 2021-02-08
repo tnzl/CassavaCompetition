@@ -21,10 +21,10 @@ class Learner:
         self.seed = seed
         self.tpu = tpu
         self.num_epochs = num_epochs
+        self.epoch = None
         self.verbose = verbose
         self.device = device
         self.run_name = run_name
-        self.epoch = None
         self.cb_manager = CallbackManager(self)
         self.cbs = cbs
         self.bs = bs
@@ -48,6 +48,12 @@ class Learner:
         if self.verbose:
             self.logger(f'[Process {self.tpu}]:'+msg)
             return 
+        return
+
+    def save_model(self, name='NA.pth'):
+        xm.rendezvous('save_model')
+        xm.master_print('save model')
+        xm.save(model.state_dict(), name)
         return
 
     def train_loop_fn(self):
@@ -134,4 +140,21 @@ class Learner:
         # xm.master_print(f'val. accuracy = {acc_reduced},\n val_time = {start_time-time.time()}')
         self.verboser(f'val. accuracy = {acc_reduced},\n val_time = {time.time()-start_time}')
 
-    
+    def fit(self):
+
+        for i in range(self.num_epochs):
+            self.epoch = i
+            # sd = {'epoch' : i}
+            # wandb_run.log(sd)
+            self.cb_manager.on_epoch_begin(self.epoch)
+            xm.master_print(f'EPOCH {i}:')
+            # train one epoch
+            self.train_loop_fn()
+                    
+            # validation one epoch
+            self.eval_loop_fn()
+
+            # val_stats.update(train_stats)
+            self.cb_manager.on_epoch_end(epoch, state_dict=None)
+
+            gc.collect()

@@ -47,8 +47,8 @@ def run(rank, flags):
     fold = flags['fold']
     training_data_path = "/kaggle/input/cassava-jpeg-256x256/kaggle/train_images_jpeg" #define the dataset path
     # define DataLoader with the defined sampler    
-    train_loader = pl.MpDeviceLoader(get_dl(flags, fold=1, aim='train'), device) # puts the train data onto the current TPU core
-    valid_loader = pl.MpDeviceLoader(get_dl(flags, fold=1, aim='valid'), device) # puts the valid data onto the current TPU core
+    train_loader = pl.MpDeviceLoader(get_dl(flags, fold=flags['fold'], aim='train'), device) # puts the train data onto the current TPU core
+    valid_loader = pl.MpDeviceLoader(get_dl(flags, fold=flags['fold'], aim='valid'), device) # puts the valid data onto the current TPU core
     model = MX.to(device) # put model onto the current TPU core
     loss_fn = nn.CrossEntropyLoss()
     optimizer = Adam(model.parameters(), lr=FLAGS['lr']*xm.xrt_world_size()) # often a good idea to scale the learning rate by number of cores
@@ -74,27 +74,29 @@ def run(rank, flags):
     gc.collect()
     
     xm.master_print(f'========== training fold {FLAGS["fold"]} for {FLAGS["epochs"]} epochs ==========')
-    for i in range(flags['epochs']):
-        sd = {'epoch' : i}
-        # wandb_run.log(sd)
-        # self.cb_manager.on_epoch_begin(epoch)
-        xm.master_print(f'EPOCH {i}:')
-        # train one epoch
-        learner.train_loop_fn()
+    learner.fit()
+    learner.save_model(name=flags['model']+'epoch='+learner.epoch+'fold='+flags['fold'])
+    # for i in range(flags['epochs']):
+    #     sd = {'epoch' : i}
+    #     # wandb_run.log(sd)
+    #     # self.cb_manager.on_epoch_begin(epoch)
+    #     xm.master_print(f'EPOCH {i}:')
+    #     # train one epoch
+    #     learner.train_loop_fn()
                 
-        # validation one epoch
-        learner.eval_loop_fn()
+    #     # validation one epoch
+    #     learner.eval_loop_fn()
 
-        # val_stats.update(train_stats)
-        # self.cb_manager.on_epoch_end(epoch, state_dict=val_stats)
+    #     # val_stats.update(train_stats)
+    #     # self.cb_manager.on_epoch_end(epoch, state_dict=val_stats)
 
-        gc.collect()
+    #     gc.collect()
     
-    xm.rendezvous('save_model')
+    # xm.rendezvous('save_model')
     
-    xm.master_print('save model')
+    # xm.master_print('save model')
     
-    xm.save(model.state_dict(), f'xla_trained_model_{FLAGS["epochs"]}_epochs_fold_{FLAGS["fold"]}.pth')
+    # xm.save(model.state_dict(), f'xla_trained_model_{FLAGS["epochs"]}_epochs_fold_{FLAGS["fold"]}.pth')
 
 # create folds
 df = pd.read_csv("/kaggle/input/cassava-leaf-disease-classification/train.csv")
