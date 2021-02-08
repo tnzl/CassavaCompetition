@@ -74,29 +74,31 @@ def run(rank, flags):
     gc.collect()
     
     xm.master_print(f'========== training fold {FLAGS["fold"]} for {FLAGS["epochs"]} epochs ==========')
-    learner.fit()
-    learner.save_model(name=flags['model']+'epoch='+learner.epoch+'fold='+flags['fold'])
-    # for i in range(flags['epochs']):
-    #     sd = {'epoch' : i}
-    #     # wandb_run.log(sd)
-    #     # self.cb_manager.on_epoch_begin(epoch)
-    #     xm.master_print(f'EPOCH {i}:')
-    #     # train one epoch
-    #     learner.train_loop_fn()
+    # learner.fit()
+    # learner.save_model(name=flags['model']+'epoch='+learner.epoch+'fold='+flags['fold'])
+    for i in range(flags['epochs']):
+        sd = {'epoch' : i}
+        # wandb_run.log(sd)
+        # self.cb_manager.on_epoch_begin(epoch)
+        xm.master_print(f'EPOCH {i}:')
+        # train one epoch
+        learner.train_loop_fn()
                 
-    #     # validation one epoch
-    #     learner.eval_loop_fn()
+        # validation one epoch
+        learner.eval_loop_fn()
 
-    #     # val_stats.update(train_stats)
-    #     # self.cb_manager.on_epoch_end(epoch, state_dict=val_stats)
+        # val_stats.update(train_stats)
+        # self.cb_manager.on_epoch_end(epoch, state_dict=val_stats)
 
-    #     gc.collect()
+        gc.collect()
+        if i%5==0:
+            learner.save_model(name=f'resnext;_{i}_epochs;_fold_{FLAGS["fold"]}.pth')
     
-    # xm.rendezvous('save_model')
+    xm.rendezvous('save_model')
     
-    # xm.master_print('save model')
+    xm.master_print('save model')
     
-    # xm.save(model.state_dict(), f'xla_trained_model_{FLAGS["epochs"]}_epochs_fold_{FLAGS["fold"]}.pth')
+    xm.save(model.state_dict(), f'xla_trained_model_{FLAGS["epochs"]}_epochs_fold_{FLAGS["fold"]}.pth')
 
 # create folds
 df = pd.read_csv("/kaggle/input/cassava-leaf-disease-classification/train.csv")
@@ -126,7 +128,7 @@ FLAGS = {
     'batch_size': 128,
     'num_workers': 4,
     'lr': 3e-4,
-    'epochs': 2, 
+    'epochs': 30, 
     'seed':1111
 }
 wandb_run = wandb.init(project=FLAGS['project'], name=FLAGS['run_name'], config=FLAGS)

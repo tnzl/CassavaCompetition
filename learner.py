@@ -155,6 +155,6 @@ class Learner:
             self.eval_loop_fn()
 
             # val_stats.update(train_stats)
-            self.cb_manager.on_epoch_end(epoch, state_dict=None)
+            self.cb_manager.on_epoch_end(self.epoch, state_dict=None)
 
             gc.collect()
