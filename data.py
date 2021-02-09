@@ -82,28 +82,27 @@ def get_default_sampler(ds, aim='train'):
             )
 
 def get_default_transforms(aim='train'):
-    t = {
-        'train' : Compose([
+    if aim=='train':
+        return Compose([
             # RandomResizedCrop(self.img_size, self.img_size),
+            Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225], max_pixel_value=255.0, p=1.0),
             Transpose(p=0.5),
             HorizontalFlip(p=0.5),
             VerticalFlip(p=0.5),
             ShiftScaleRotate(p=0.5),
             HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit=0.2, val_shift_limit=0.2, p=0.5),
             RandomBrightnessContrast(brightness_limit=(-0.1,0.1), contrast_limit=(-0.1, 0.1), p=0.5),
-            Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225], max_pixel_value=255.0, p=1.0),
             CoarseDropout(p=0.5),
             Cutout(p=0.5),
             # ToTensorV2(p=1.0),
-        ], p=1.),
-        'valid' : Compose([
+        ], p=1.)
+    else aim == 'valid' : 
+        return Compose([
             # Resize(int(self.img_size*1.1), int(self.img_size*1.1)),
             # CenterCrop(flags['img_size'], flags['img_size'], p=1.),
             Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225], max_pixel_value=255.0, p=1.0),
             # ToTensorV2(p=1.0),
         ], p=1.)
-        }
-    return t[aim]
 
 def get_dl(flags, fold=1, aim='train', transforms=None, sampler=None):
 

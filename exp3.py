@@ -30,7 +30,7 @@ import numpy as np
 import warnings
 
 from data import ImageDataset, get_default_sampler, get_default_transforms, get_dl
-from learner import Learner
+from learner import Learner, train_loop_fn, eval_loop_fn
 from callbacks import WandbCallback, PrintCallback
 
 
@@ -42,6 +42,17 @@ def run(rank, flags):
     xm.master_print('Starting run')
     global FLAGS
     torch.set_default_tensor_type('torch.FloatTensor')
+    train_dict = {
+        'flags' : flags,
+        'device' : xm.xla_device(),
+        'loss_fn' : nn.CrossEntropyLoss()
+    }
+    train_dict['train_loader'] = pl.MpDeviceLoader(get_dl(flags, fold=flags['fold'], aim='train'), train_dict['device'])
+    train_dict['valid_loader'] = pl.MpDeviceLoader(get_dl(flags, fold=flags['fold'], aim='valid'), train_dict['device'])
+    train_dict['model'] = MX.to(train_dict['device'])
+    train_dict['optimizer'] = Adam(train_dict['model'].parameters(), lr=flags['lr']*xm.xrt_world_size()) 
+    train_dict['lr_schedule'] = torch.optim.lr_scheduler.CosineAnnealingLR(train_dict['optimizer'], len(train_loader)*flags['epochs'])
+    
     device = xm.xla_device() #device, will be different for each core on the TPU
     epochs = flags['epochs']
     fold = flags['fold']
@@ -54,45 +65,56 @@ def run(rank, flags):
     optimizer = Adam(model.parameters(), lr=FLAGS['lr']*xm.xrt_world_size()) # often a good idea to scale the learning rate by number of cores
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, len(train_loader)*FLAGS['epochs']) #let's use a scheduler
 
-    learner = Learner( 
-        model=model, 
-        optimizer=optimizer, 
-        loss_fn=loss_fn, 
-        device=device, 
-        num_epochs=flags['epochs'], 
-        bs=flags['batch_size'], 
-        train_dl=train_loader, 
-        valid_dl=valid_loader, 
-        cbs=[], 
-        run_name=flags['run_name'], 
-        verbose=True, 
-        tpu=rank+1, 
-        seed=flags['seed'], 
-        metrics=None, 
-        lr_schedule=scheduler
-        )
+    # learner = Learner( 
+    #     model=model, 
+    #     optimizer=optimizer, 
+    #     loss_fn=loss_fn, 
+    #     device=device, 
+    #     num_epochs=flags['epochs'], 
+    #     bs=flags['batch_size'], 
+    #     train_dl=train_loader, 
+    #     valid_dl=valid_loader, 
+    #     cbs=[], 
+    #     run_name=flags['run_name'], 
+    #     verbose=True, 
+    #     tpu=rank+1, 
+    #     seed=flags['seed'], 
+    #     metrics=None, 
+    #     lr_schedule=scheduler
+    #     )
     gc.collect()
     
     xm.master_print(f'========== training fold {FLAGS["fold"]} for {FLAGS["epochs"]} epochs ==========')
     # learner.fit()
     # learner.save_model(name=flags['model']+'epoch='+learner.epoch+'fold='+flags['fold'])
     for i in range(flags['epochs']):
-        sd = {'epoch' : i}
-        # wandb_run.log(sd)
-        # self.cb_manager.on_epoch_begin(epoch)
         xm.master_print(f'EPOCH {i}:')
         # train one epoch
-        learner.train_loop_fn()
+        train_loop_fn(train_loader, loss_fn, model, optimizer, device, scheduler)
                 
         # validation one epoch
-        learner.eval_loop_fn()
-
-        # val_stats.update(train_stats)
-        # self.cb_manager.on_epoch_end(epoch, state_dict=val_stats)
+        eval_loop_fn(valid_loader, loss_fn, model, device)
 
         gc.collect()
-        if i%5==0:
-            learner.save_model(name=f'resnext;_{i}_epochs;_fold_{FLAGS["fold"]}.pth')
+
+        # sd = {'epoch' : i}
+        # # wandb_run.log(sd)
+        # # self.cb_manager.on_epoch_begin(epoch)
+        # xm.master_print(f'EPOCH {i}:')
+        # # train one epoch
+        # learner.train_loop_fn()
+                
+        # # validation one epoch
+        # learner.eval_loop_fn()
+
+        # # val_stats.update(train_stats)
+        # # self.cb_manager.on_epoch_end(epoch, state_dict=val_stats)
+        # # if learner.lr_schedule:
+        # #     learner.lr_schedule.step()
+
+        # gc.collect()
+        # if i%5==0:
+        #     learner.save_model(name=f'resnext;_{i}_epochs;_fold_{FLAGS["fold"]}.pth')
     
     xm.rendezvous('save_model')
     
