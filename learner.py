@@ -15,7 +15,6 @@ def train_loop_fn(train_dict):
         # pass image to model
         train_dict['optimizer'].zero_grad()
         outputs = train_dict['model'](images)
-        xm.master_print(f'+++++++++++{bi}++++++++++')
         # calculate loss
         loss = train_dict['loss_fn'](outputs, targets)
         
@@ -85,6 +84,6 @@ def fit(train_dict):
 
         gc.collect()
         xm.master_print(f'Epoch {i} time = {time.time()-es}')
-        train_dict['cb_manager'].on_epoch_begin(i, state_dict=None)
+        train_dict['cb_manager'].on_epoch_end(i, state_dict=None)
     train_dict['cb_manager'].on_fit_end(state_dict=None)
         

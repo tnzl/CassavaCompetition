@@ -53,7 +53,7 @@ def run(rank, flags):
     train_dict['optimizer'] = Adam(train_dict['model'].parameters(), lr=flags['lr']*xm.xrt_world_size()) 
     train_dict['lr_schedule'] = torch.optim.lr_scheduler.CosineAnnealingLR(train_dict['optimizer'], len(train_dict['train_loader'])*flags['epochs'])
     train_dict['cb_manager'] = CallbackManager(train_dict)
-    train_dict['cbs'] = [PrintCallback()]
+    train_dict['cbs'] = [PrintCallback(logger=xm.master_print)]
     gc.collect()
     
     xm.master_print(f'========== training fold {FLAGS["fold"]} for {FLAGS["epochs"]} epochs ==========')
