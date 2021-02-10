@@ -7,6 +7,7 @@ from sklearn import metrics
 from callbacks import CallbackManager
 
 def train_loop_fn(train_dict):
+    es = time.time()
     train_dict['model'].train() # put model in training mode
     fin_correct = []
     fin_loss = []
@@ -37,13 +38,11 @@ def train_loop_fn(train_dict):
     
     sd = {
         'train_epoch_loss' : sum(fin_loss)/len(fin_loss),
-        'train_epoch_accuracy' : sum(fin_correct)/(len(fin_correct)*train_dict['flags']['batch_size'])
+        'train_epoch_accuracy' : sum(fin_correct)/(len(fin_correct)*train_dict['flags']['batch_size']), 
+        'train_epoch_time' : time.time()-es
     }
-    # since the loss is on all 8 cores, reduce the loss values and print the average
     sd['train_epoch_loss'] = xm.mesh_reduce('loss_reduce',sd['train_epoch_loss'], lambda x: sum(x) / len(x)) 
     sd['train_epoch_accuracy'] = xm.mesh_reduce('acc_reduce',sd['train_epoch_accuracy'], lambda x: sum(x) / len(x)) 
-    # master_print will only print once (not from all 8 cores)
-    # xm.master_print(f'bi={bi}, train loss={loss_reduced}')
     return sd
     
     
@@ -89,12 +88,8 @@ def fit(train_dict):
     train_dict['cb_manager'].on_fit_begin(state_dict=None)
     for i in range(train_dict['flags']['epochs']):
         train_dict['cb_manager'].on_epoch_begin(i, state_dict=None)
-        es = time.time()
-        # xm.master_print(f'EPOCH {i}:')
-        # train one epoch
+
         train_sd = train_loop_fn(train_dict)
-                
-        # validation one epoch
         valid_sd = eval_loop_fn(train_dict)
 
         gc.collect()

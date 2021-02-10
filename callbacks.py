@@ -1,3 +1,5 @@
+import torch_xla.core.xla_model as xm
+
 class CallbackManager:
 
     def __init__(self, train_dict):
@@ -106,3 +108,41 @@ class CheckPrintCallback(Callback):
     def on_batch_end(self, train_dict, batch, state_dict=None):
         if batch<=1:
             self.logger(f'In on_batch_end, {batch}, {state_dict}')
+
+class UnfreezePattern(Callback):
+    def __init__(self, unfreze_pattern):
+        super().__init__()
+        self.unfreze_pattern = unfreze_pattern
+        self.param_len = None
+
+    def unfreeze(self,train_dict, n):
+        c = 0
+        for p in train_dict['model'].parameters(): 
+            if c > self.param_len-n-1:
+                p.requires_grad = True
+            c += 1
+
+    def on_fit_begin(self, train_dict, state_dict=None):
+        c = 0 
+        for p in train_dict['model'].parameters():
+            c += 1
+        self.param_len = c
+
+    def on_epoch_begin(self, train_dict, epoch, state_dict=None):
+        self.unfreeze(train_dict, self.unfreze_pattern[epoch])
+
+class ModelSaver(Callback):
+    def __init__(self, epoch_freq=2):
+        super().__init__()    
+        self.epoch_freq = epoch_freq
+
+    def on_epoch_end(self, train_dict, epoch, state_dict=None):
+        if epoch%self.epoch_freq==0:
+            mn=train_dict['flags']['model']
+            ff=train_dict['flags']['fold']
+            name = f'{mn}_epochs={epoch}_fold={ff}.pth'
+            xm.rendezvous('save_model')
+            xm.save(train_dict['model'].state_dict(), name)
+            xm.master_print(f'{name} model saved.')
+    
+    

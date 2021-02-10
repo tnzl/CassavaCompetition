@@ -33,7 +33,7 @@ import warnings
 
 from data import ImageDataset, get_default_sampler, get_default_transforms, get_dl
 from learner import fit
-from callbacks import CallbackManager, PrintCallback
+from callbacks import CallbackManager, PrintCallback, UnfreezePattern, ModelSaver
 
 os.environ['XLA_USE_BF16']="1"
 os.environ['XLA_TENSOR_ALLOCATOR_MAXSIZE'] = '100000000'
@@ -53,7 +53,7 @@ def run(rank, flags):
     train_dict['optimizer'] = Adam(train_dict['model'].parameters(), lr=flags['lr']*xm.xrt_world_size()) 
     train_dict['lr_schedule'] = torch.optim.lr_scheduler.CosineAnnealingLR(train_dict['optimizer'], len(train_dict['train_loader'])*flags['epochs'])
     train_dict['cb_manager'] = CallbackManager(train_dict)
-    train_dict['cbs'] = [PrintCallback(logger=xm.master_print)]
+    train_dict['cbs'] = [PrintCallback(logger=xm.master_print), UnfreezePattern(flags['unfreeze_pattern']), ModelSaver()]
     gc.collect()
     
     xm.master_print(f'========== training fold {FLAGS["fold"]} for {FLAGS["epochs"]} epochs ==========')
@@ -73,11 +73,12 @@ FLAGS = {
     'training_data_path' : "/kaggle/input/cassava-jpeg-256x256/kaggle/train_images_jpeg",
     'fold': 0,
     'model': 'resnext50_32x4d',
+    'unfreeze_pattern' : [2]*3+list(range(5,12,3))+list(range(17, 72, 6))+list(range(80, 162, 9))+[161],
     'pretrained': True,
     'batch_size': 32,
     'num_workers': 4,
     'lr': 3e-4,
-    'epochs': 1, 
+    'epochs': 10, 
     'seed':1111
 }
 
