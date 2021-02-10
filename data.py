@@ -96,7 +96,7 @@ def get_default_transforms(aim='train'):
             Cutout(p=0.5),
             # ToTensorV2(p=1.0),
         ], p=1.)
-    else aim == 'valid' : 
+    elif aim == 'valid' : 
         return Compose([
             # Resize(int(self.img_size*1.1), int(self.img_size*1.1)),
             # CenterCrop(flags['img_size'], flags['img_size'], p=1.),

@@ -1,3 +1,4 @@
+# import timm 
 import gc
 import os
 import time
@@ -31,73 +32,11 @@ import warnings
 
 
 from data import ImageDataset, get_default_sampler, get_default_transforms, get_dl
-# from learner import Learner, train_loop_fn, eval_loop_fn
+from learner import fit
 from callbacks import WandbCallback, PrintCallback
 
 os.environ['XLA_USE_BF16']="1"
 os.environ['XLA_TENSOR_ALLOCATOR_MAXSIZE'] = '100000000'
-
-def train_loop_fn(train_dict):
-    train_dict['model'].train() # put model in training mode
-    for bi, d in enumerate(train_dict['train_loader']): # enumerate through the dataloader
-        
-        images, targets = d
-
-        # pass image to model
-        train_dict['optimizer'].zero_grad()
-        outputs = train_dict['model'](images)
-        
-        # calculate loss
-        loss = train_dict['loss_fn'](outputs, targets)
-        
-        # backpropagate
-        loss.backward()
-        
-        # Use PyTorch XLA optimizer stepping
-        xm.optimizer_step(train_dict['optimizer'])
-        
-        # Step the scheduler
-        if train_dict['lr_schedule'] is not None: 
-            train_dict['lr_schedule'].step()
-    
-    # since the loss is on all 8 cores, reduce the loss values and print the average
-    loss_reduced = xm.mesh_reduce('loss_reduce',loss, lambda x: sum(x) / len(x)) 
-    # master_print will only print once (not from all 8 cores)
-    xm.master_print(f'bi={bi}, train loss={loss_reduced}')
-        
-    train_dict['model'].eval() # put model in eval mode for later use
-    
-def eval_loop_fn(train_dict):
-    fin_targets = []
-    fin_outputs = []
-    for bi, d in enumerate(train_dict['valid_loader']): # enumerate through dataloader
-        
-        images, targets = d
-
-        # pass image to model
-        with torch.no_grad(): outputs = train_dict['model'](images)
-
-        # Add the outputs and targets to a list 
-        targets_np = targets.cpu().detach().numpy().tolist()
-        outputs_np = outputs.cpu().detach().numpy().tolist()
-        fin_targets.extend(targets_np)
-        fin_outputs.extend(outputs_np)    
-        del targets_np, outputs_np
-        gc.collect() # delete for memory conservation
-                
-    o,t = np.array(fin_outputs), np.array(fin_targets)
-    
-    # calculate loss
-    loss = train_dict['loss_fn'](torch.tensor(o), torch.tensor(t))
-    # since the loss is on all 8 cores, reduce the loss values and print the average
-    loss_reduced = xm.mesh_reduce('loss_reduce',loss, lambda x: sum(x) / len(x)) 
-    # master_print will only print once (not from all 8 cores)
-    xm.master_print(f'val. loss={loss_reduced}')
-    
-    acc = metrics.accuracy_score(t,o.argmax(axis=1))
-    acc_reduced = xm.mesh_reduce('acc_reduce', acc, lambda x: sum(x) / len(x))
-        
-    xm.master_print(f'val. accuracy = {acc_reduced}')
 
 def run(rank, flags):
     global FLAGS
@@ -117,16 +56,9 @@ def run(rank, flags):
     gc.collect()
     
     xm.master_print(f'========== training fold {FLAGS["fold"]} for {FLAGS["epochs"]} epochs ==========')
-    for i in range(FLAGS['epochs']):
-        xm.master_print(f'EPOCH {i}:')
-        # train one epoch
-        train_loop_fn(train_dict)
-                
-        # validation one epoch
-        eval_loop_fn(train_dict)
 
-        gc.collect()
-    
+    fit(train_dict)
+
     xm.rendezvous('save_model')
     
     xm.master_print('save model')
@@ -141,10 +73,10 @@ FLAGS = {
     'fold': 0,
     'model': 'resnext50_32x4d',
     'pretrained': True,
-    'batch_size': 128,
+    'batch_size': 32,
     'num_workers': 4,
     'lr': 3e-4,
-    'epochs': 30, 
+    'epochs': 2, 
     'seed':1111
 }
 
@@ -161,7 +93,7 @@ df.to_csv("train_folds.csv", index=False)
 # model
 net = torchvision.models.resnext50_32x4d(pretrained=True).double()
 for param in net.parameters():
-    param.requires_grad = False
+    param.requires_grad = True
 net.fc = nn.Linear(net.fc.in_features, 5)
 MX = xmp.MpModelWrapper(net)
 
