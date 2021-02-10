@@ -67,6 +67,25 @@ class PrintCallback(Callback):
 
     #fit 
     def on_fit_begin(self, train_dict, state_dict=None):
+        self.logger(f'Starting to fit...')
+
+    def on_fit_end(self, train_dict, state_dict=None):
+        self.logger(f'...fit complete!')
+
+    #epoch
+    def on_epoch_begin(self, train_dict, epoch, state_dict=None):
+        self.logger(f'Starting epoch: {epoch}')
+
+    def on_epoch_end(self, train_dict, epoch, state_dict=None):
+        self.logger(f'Completed epoch : {epoch}, \n{state_dict}')
+        
+class CheckPrintCallback(Callback):
+    def __init__(self, logger=print):
+        super().__init__()
+        self.logger = logger
+
+    #fit 
+    def on_fit_begin(self, train_dict, state_dict=None):
         self.logger(f'In on_fit_begin {state_dict}')
 
     def on_fit_end(self, train_dict, state_dict=None):

@@ -62,7 +62,7 @@ def run(rank, flags):
 
     xm.rendezvous('save_model')
     
-    xm.master_print('save model')
+    # xm.master_print('save model')
     
     xm.save(train_dict['model'].state_dict(), f'xla_trained_model_{FLAGS["epochs"]}_epochs_fold_{FLAGS["fold"]}.pth')
 
@@ -77,7 +77,7 @@ FLAGS = {
     'batch_size': 32,
     'num_workers': 4,
     'lr': 3e-4,
-    'epochs': 2, 
+    'epochs': 1, 
     'seed':1111
 }
 
