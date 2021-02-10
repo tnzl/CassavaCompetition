@@ -9,13 +9,13 @@ from callbacks import CallbackManager
 def train_loop_fn(train_dict):
     train_dict['model'].train() # put model in training mode
     for bi, d in enumerate(train_dict['train_loader']): # enumerate through the dataloader
-        
+        train_dict['cb_manager'].on_batch_begin(bi, state_dict=None)
         images, targets = d
 
         # pass image to model
         train_dict['optimizer'].zero_grad()
         outputs = train_dict['model'](images)
-        
+        xm.master_print(f'+++++++++++{bi}++++++++++')
         # calculate loss
         loss = train_dict['loss_fn'](outputs, targets)
         
@@ -28,6 +28,9 @@ def train_loop_fn(train_dict):
         # Step the scheduler
         if train_dict['lr_schedule'] is not None: 
             train_dict['lr_schedule'].step()
+        
+        with torch.no_grad():
+            train_dict['cb_manager'].on_batch_end(bi, state_dict={'loss': loss.detach().cpu().item()})
     
     # since the loss is on all 8 cores, reduce the loss values and print the average
     loss_reduced = xm.mesh_reduce('loss_reduce',loss, lambda x: sum(x) / len(x)) 
@@ -69,8 +72,9 @@ def eval_loop_fn(train_dict):
     xm.master_print(f'val. accuracy = {acc_reduced}')
 
 def fit(train_dict):
-    
+    train_dict['cb_manager'].on_fit_begin(state_dict=None)
     for i in range(train_dict['flags']['epochs']):
+        train_dict['cb_manager'].on_epoch_begin(i, state_dict=None)
         es = time.time()
         xm.master_print(f'EPOCH {i}:')
         # train one epoch
@@ -81,4 +85,6 @@ def fit(train_dict):
 
         gc.collect()
         xm.master_print(f'Epoch {i} time = {time.time()-es}')
+        train_dict['cb_manager'].on_epoch_begin(i, state_dict=None)
+    train_dict['cb_manager'].on_fit_end(state_dict=None)
         

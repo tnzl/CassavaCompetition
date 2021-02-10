@@ -33,7 +33,7 @@ import warnings
 
 from data import ImageDataset, get_default_sampler, get_default_transforms, get_dl
 from learner import fit
-from callbacks import WandbCallback, PrintCallback
+from callbacks import CallbackManager, PrintCallback
 
 os.environ['XLA_USE_BF16']="1"
 os.environ['XLA_TENSOR_ALLOCATOR_MAXSIZE'] = '100000000'
@@ -52,7 +52,8 @@ def run(rank, flags):
     train_dict['model'] = MX.to(train_dict['device'])
     train_dict['optimizer'] = Adam(train_dict['model'].parameters(), lr=flags['lr']*xm.xrt_world_size()) 
     train_dict['lr_schedule'] = torch.optim.lr_scheduler.CosineAnnealingLR(train_dict['optimizer'], len(train_dict['train_loader'])*flags['epochs'])
-    
+    train_dict['cb_manager'] = CallbackManager(train_dict)
+    train_dict['cbs'] = [PrintCallback()]
     gc.collect()
     
     xm.master_print(f'========== training fold {FLAGS["fold"]} for {FLAGS["epochs"]} epochs ==========')
@@ -93,7 +94,7 @@ df.to_csv("train_folds.csv", index=False)
 # model
 net = torchvision.models.resnext50_32x4d(pretrained=True).double()
 for param in net.parameters():
-    param.requires_grad = True
+    param.requires_grad = False
 net.fc = nn.Linear(net.fc.in_features, 5)
 MX = xmp.MpModelWrapper(net)
 
