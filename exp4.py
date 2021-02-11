@@ -53,12 +53,12 @@ def run(rank, flags):
     train_dict['optimizer'] = Adam(train_dict['model'].parameters(), lr=flags['lr']*xm.xrt_world_size()) 
     train_dict['lr_schedule'] = torch.optim.lr_scheduler.CosineAnnealingLR(train_dict['optimizer'], len(train_dict['train_loader'])*flags['epochs'])
     train_dict['cb_manager'] = CallbackManager(train_dict)
-    train_dict['cbs'] = [PrintCallback(logger=xm.master_print), UnfreezePattern(flags['unfreeze_pattern']), ModelSaver()]
+    train_dict['cbs'] = [PrintCallback(logger=xm.master_print), UnfreezePattern(flags['unfreeze_pattern']), ModelSaver(epoch_freq=5)]
     gc.collect()
     
     xm.master_print(f'========== training fold {FLAGS["fold"]} for {FLAGS["epochs"]} epochs ==========')
 
-    fit(train_dict)
+    fit(train_dict, continue_from=flags['continue_from'])
 
     xm.rendezvous('save_model')
     
@@ -73,30 +73,40 @@ FLAGS = {
     'training_data_path' : "/kaggle/input/cassava-jpeg-256x256/kaggle/train_images_jpeg",
     'fold': 0,
     'model': 'resnext50_32x4d',
-    'unfreeze_pattern' : [2]*3+list(range(5,12,3))+list(range(17, 72, 6))+list(range(80, 162, 9))+[161],
+    'unfreeze_pattern' : [2]*3+list(range(5,12,3))+list(range(17, 72, 6))+list(range(80, 162, 9))+[161]*2,
     'pretrained': True,
     'batch_size': 32,
     'num_workers': 4,
     'lr': 3e-4,
-    'epochs': 10, 
-    'seed':1111
+    'epochs': 27, 
+    'seed':1111,
+    'continue_from' : 16
 }
 
 # create folds
-df = pd.read_csv("/kaggle/input/cassava-leaf-disease-classification/train.csv")
-df["kfold"] = -1    
-df = df.sample(frac=1).reset_index(drop=True)
-y = df.label.values
-kf = model_selection.StratifiedKFold(n_splits=5)
-for f, (t_, v_) in enumerate(kf.split(X=df, y=y)):
-    df.loc[v_, 'kfold'] = f
-df.to_csv("train_folds.csv", index=False)
+# df = pd.read_csv("/kaggle/input/cassava-leaf-disease-classification/train.csv")
+# df["kfold"] = -1    
+# df = df.sample(frac=1).reset_index(drop=True)
+# y = df.label.values
+# kf = model_selection.StratifiedKFold(n_splits=5)
+# for f, (t_, v_) in enumerate(kf.split(X=df, y=y)):
+#     df.loc[v_, 'kfold'] = f
+# df.to_csv("train_folds.csv", index=False)
 
 # model
-net = torchvision.models.resnext50_32x4d(pretrained=True).double()
-for param in net.parameters():
-    param.requires_grad = False
-net.fc = nn.Linear(net.fc.in_features, 5)
+if FLAGS['continue_from']:
+    net = torchvision.models.resnext50_32x4d(pretrained=TrFalse)
+    net.fc = nn.Linear(net.fc.in_features, 5)
+    mn=FLAGS['model']
+    ff=FLAGS['fold']
+    ep = FLAGS['continue_from']-1
+    name = f'{mn}_epochs={ep}_fold={ff}.pth'
+    net.load_state_dict(torch.load(name))
+else:
+    net = torchvision.models.resnext50_32x4d(pretrained=True)
+    for param in net.parameters():
+        param.requires_grad = False
+    net.fc = nn.Linear(net.fc.in_features, 5)
 MX = xmp.MpModelWrapper(net)
 
 # Spawn processes

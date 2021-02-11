@@ -44,9 +44,9 @@ def train_loop_fn(train_dict):
     sd['train_epoch_loss'] = xm.mesh_reduce('loss_reduce',sd['train_epoch_loss'], lambda x: sum(x) / len(x)) 
     sd['train_epoch_accuracy'] = xm.mesh_reduce('acc_reduce',sd['train_epoch_accuracy'], lambda x: sum(x) / len(x)) 
     return sd
-    
-    
+      
 def eval_loop_fn(train_dict):
+    es = time.time()
     train_dict['model'].eval() # put model in eval mode for later use
     fin_targets = []
     fin_outputs = []
@@ -80,13 +80,21 @@ def eval_loop_fn(train_dict):
     # xm.master_print(f'val. accuracy = {acc_reduced}')
     sd = {
         'valid_loss' : loss_reduced.item(),
-        'valid_accuracy' : acc_reduced
+        'valid_accuracy' : acc_reduced,
+        'valid_time' : time.time()-es
     }
     return sd
 
-def fit(train_dict):
+def continue_set(epoch, train_dict):
+    for i in range(epoch*len(train_dict['train_loader'])):
+        if train_dict['lr_schedule']:
+            train_dict['lr_schedule'].step()
+
+def fit(train_dict, continue_from=0):
     train_dict['cb_manager'].on_fit_begin(state_dict=None)
-    for i in range(train_dict['flags']['epochs']):
+    if continue_from:
+        continue_set(continue_from, train_dict)
+    for i in range(continue_from, train_dict['flags']['epochs']):
         train_dict['cb_manager'].on_epoch_begin(i, state_dict=None)
 
         train_sd = train_loop_fn(train_dict)
