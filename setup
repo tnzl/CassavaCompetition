@@ -1,3 +1,4 @@
 echo Starting setup...
 curl https://raw.githubusercontent.com/pytorch/xla/master/contrib/scripts/env-setup.py -o pytorch-xla-env-setup.py  > /dev/null
 python pytorch-xla-env-setup.py --version nightly  > /dev/null
+pip install -q efficientnet_pytorch > /dev/null

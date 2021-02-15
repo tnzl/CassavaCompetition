@@ -1,4 +1,5 @@
 import torch_xla.core.xla_model as xm
+import torch
 
 class CallbackManager:
 
@@ -145,4 +146,15 @@ class ModelSaver(Callback):
             xm.save(train_dict['model'].state_dict(), name)
             xm.master_print(f'{name} model saved.')
     
+class RLPSchduler(Callback):
+    def __init__(self):
+        self.scheduler = None
+
+    def on_fit_begin(self, train_dict, state_dict=None):
+        self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(train_dict['optimizer'],mode='min',factor=0.8
+                                ,patience=1,threshold=0.0001,threshold_mode='abs',min_lr=1e-8,eps=1e-08)
+        xm.master_print('Scheduler initialized.')
+
+    def on_epoch_end(self, train_dict, epoch, state_dict=None):
+        self.scheduler.step(state_dict['valid_loss'])
     
