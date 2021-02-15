@@ -79,7 +79,8 @@ def run(rank, flags):
     train_dict['model'] = MX.to(train_dict['device'])
     train_dict['optimizer'] = Adam(train_dict['model'].parameters(), lr=flags['lr']*xm.xrt_world_size()) 
     # train_dict['lr_schedule'] = torch.optim.lr_scheduler.CosineAnnealingLR(train_dict['optimizer'], len(train_dict['train_loader'])*flags['epochs'])
-    train_dict['lr_schedule'] = None
+    train_dict['batch_lr_schedule'] = None
+    train_dict['epoch_lr_schedule'] = torch.optim.lr_scheduler.ReduceLROnPlateau(train_dict['optimizer'],mode='min',factor=0.8,patience=1,threshold=0.0001,threshold_mode='abs',min_lr=1e-8,eps=1e-08)
     train_dict['cb_manager'] = CallbackManager(train_dict)
     train_dict['cbs'] = [PrintCallback(logger=xm.master_print), ModelSaver(epoch_freq=5), RLPSchduler()]
     gc.collect()

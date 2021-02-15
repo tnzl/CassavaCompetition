@@ -28,8 +28,8 @@ def train_loop_fn(train_dict):
         xm.optimizer_step(train_dict['optimizer'])
         
         # Step the scheduler
-        if train_dict['lr_schedule'] is not None: 
-            train_dict['lr_schedule'].step()
+        if train_dict['batch_lr_schedule'] is not None: 
+            train_dict['batch_lr_schedule'].step()
         
         with torch.no_grad():
             fin_loss.append(loss.detach().cpu().item())
@@ -86,9 +86,12 @@ def eval_loop_fn(train_dict):
     return sd
 
 def continue_set(epoch, train_dict):
-    for i in range(epoch*len(train_dict['train_loader'])):
-        if train_dict['lr_schedule']:
-            train_dict['lr_schedule'].step()
+    if train_dict['epoch_lr_schedule']:
+        for i in range(epoch):
+            train_dict['epoch_lr_schedule'].step()
+    elif train_dict['batch_lr_schedule']:
+        for i in range(epoch*len(train_dict['train_loader'])):
+            train_dict['batch_lr_schedule'].step()
 
 def fit(train_dict, continue_from=0):
     train_dict['cb_manager'].on_fit_begin(state_dict=None)
@@ -99,6 +102,10 @@ def fit(train_dict, continue_from=0):
 
         train_sd = train_loop_fn(train_dict)
         valid_sd = eval_loop_fn(train_dict)
+
+                # Step the scheduler
+        if train_dict['epoch_lr_schedule'] is not None: 
+            train_dict['epoch_lr_schedule'].step()
 
         gc.collect()
         # xm.master_print(f'Epoch {i} time = {time.time()-es}')
