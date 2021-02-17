@@ -136,8 +136,18 @@ class ModelSaver(Callback):
     def __init__(self, epoch_freq=2):
         super().__init__()    
         self.epoch_freq = epoch_freq
+        self.min_loss = 999
 
     def on_epoch_end(self, train_dict, epoch, state_dict=None):
+        if state_dict['valid_loss'] < self.min_loss:
+            self.min_loss = state_dict['valid_loss']
+            mn=train_dict['flags']['model']
+            ff=train_dict['flags']['fold']
+            name = f'{mn}_epochs={epoch}_fold={ff}.pth'
+            xm.rendezvous('save_model')
+            xm.save(train_dict['model'].state_dict(), name)
+            xm.master_print(f'{name} model saved with least valid loss.')
+            return
         if epoch%self.epoch_freq==0:
             mn=train_dict['flags']['model']
             ff=train_dict['flags']['fold']
