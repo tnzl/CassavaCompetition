@@ -6,3 +6,5 @@ PyTXLA is a frame work built on top of PyTorch-XLA to simplify training PyTorch 
 2. Data module : `data` contains functions and classes for distributing data over TPU.
 3. Learner : `learner` is a module that lets you train PyTorch models without worrying about TPUs.
 4. Setup : `setup` installs the requirements and helps you easily ship you experiments over other systems.
+
+Do checkout exp*.py for examples on how to use this framework.
